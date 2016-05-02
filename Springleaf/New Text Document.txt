@@ -1,0 +1,280 @@
+library(caret)
+
+library(lubridate)
+
+library(readr)
+
+library(xgboost)
+
+train <- read_csv("D:/kaggle/Springleaf/DATA/CSV/train.csv")
+
+test <- read_csv("D:/kaggle/Springleaf/DATA/CSV/test.csv")
+
+
+feature.names <- names(train)[2:(ncol(train)-1)]
+
+for (f in feature.names) {
+  
+  if (class(train[[f]])=="character") {
+    
+    levels <- unique(c(train[[f]], test[[f]]))
+    
+    train[[f]] <- as.integer(factor(train[[f]], levels=levels))
+    
+    test[[f]]  <- as.integer(factor(test[[f]],  levels=levels))
+    
+  }
+}
+
+train[is.na(train)] <- -1
+
+test[is.na(test)]   <- -1
+
+benchmark <- read_csv("D:/kaggle/Springleaf/SUBMISSION/second.csv")
+
+first <- read_csv("D:/kaggle/Springleaf/SUBMISSION/third.csv")
+
+second <- read_csv("D:/kaggle/Springleaf/SUBMISSION/third_first.csv")
+
+third <- read_csv("D:/kaggle/Springleaf/SUBMISSION/fourth.csv")
+
+feature_1 <- benchmark$target[1:145231] 
+
+train$feature1 <- feature_1
+
+test$feature1 <- benchmark$target
+
+feature_2 <- first$target[1:145231] 
+
+train$feature2 <- feature_2
+
+test$feature2 <- first$target
+
+feature_3 <- second$target[1:145231] 
+
+train$feature3 <- feature_3
+
+test$feature3 <- second$target
+
+feature_4 <- third$target[1:145231] 
+
+train$feature4 <- feature_4
+
+test$feature4 <- third$target
+
+train$target <- NULL
+
+feature.names <- names(train)[2:(ncol(train))]
+
+dtrain <- xgb.DMatrix(data.matrix(train[,feature.names]), label= response)
+
+param <- list(  objective   = "binary:logistic",
+                
+                eta                 = 0.014,
+                
+                max_depth           = 10,
+                
+                subsample           = 0.7,
+                
+                colsample_bytree    = 0.7,
+                
+                
+                
+                eval_metric         = "auc"
+)
+
+
+#cv <- xgb.cv(params = param,data =  dtrain,nrounds = 700, nfold = 5, showsd = T, metrics = "auc"
+#, verbose = 2, maximize = TRUE)
+
+clf_first <- xgb.train( params = param, 
+                        
+                        data                = dtrain, 
+                        
+                        nrounds             = 1500, # changed from 300
+                        
+                        verbose             = 2, 
+                        
+                        
+                        
+                        nthread = 2,
+                        
+                        maximize = TRUE)
+
+submission_second <- data.frame(ID=test$ID)
+
+submission_second$target <- NA 
+
+submission_second[,"target"] <- predict(clf_first, data.matrix(test[,feature.names]))
+
+write_csv(submission_second, "sixth.csv")
+
+xgb.save(clf_first, "xgb_six.R")
+
+
+library(readr)
+
+#library(bit64)
+
+sink("summary.txt")
+
+train <- read_csv("D:/kaggle/Springleaf/DATA/CSV/train.csv",na=c("",NA,-1,9999,999))
+
+train <- as.data.frame(train)
+
+cols <- data.frame(col = names(train)[-1])
+
+for(i in 2:ncol(train)) {
+
+    rownum = i -1
+  
+    cols[rownum,'no_unique'] = length(unique(train[,i]))
+  
+    cat("\n")
+  
+    print(colnames(train)[i])
+  
+    cat("Length unique: ", length(unique(train[,i])), "\n")
+  
+    print(class(train[,i]))
+  
+    if(is.numeric(train[,i])) {
+    
+      cat("minimum: ", min(train[,i],na.rm = TRUE), "\n")
+    
+      cat("maximum: ", max(train[,i],na.rm = TRUE), "\n")
+    
+      cat("mean: ", mean(train[,i],na.rm = TRUE), "\n")
+    
+      cat("sd: ", sd(train[,i],na.rm = TRUE), "\n")
+    
+      cat("correlation with target p value", cor.test(train[,i],train[,ncol(train)],na.rm=TRUE)$p.value,"\n")
+    
+      cols[rownum,'no_unique'] = 0 
+  
+      } else {
+    
+        print(table(train[,i]))
+    
+        
+        cols[rownum,'no_unique'] = length(unique(train[,i]))
+    
+  }
+  
+}
+
+cat("\n")
+
+cat("\n")
+
+print("Top 20 categorical variables with most values")
+
+cols <- cols[order(-cols$no_unique),]
+
+print(cols[1:20,])
+
+sink()
+
+
+
+
+
+
+
+
+
+idens = list()
+
+iter = ncol(train)
+
+for(i in 1:iter){
+  iden = c()
+  for(j in (i+1):iter){
+    iden = c(iden,identical(train[,i],train[,j]))
+  }
+  idens[[i]] = iden
+}
+
+duplicates = which(sapply(idens,sum)!=0)
+
+duplicated = list()
+
+for(i in 1:length(duplicates)){
+  duplicated[[i]] = which(idens[[duplicates[i]]]) + duplicates[i]
+
+}
+
+all.duplicated = unique(unlist(duplicated))
+
+
+
+
+
+
+
+train[is.na(train)] <- -1
+
+test[is.na(test)]   <- -1
+
+#converting columns to dates 
+
+response <- train$target
+
+total <- rbind(train[,-ncol(train)],test)
+
+dim(total)
+
+dates <- c("VAR_0073","VAR_0075","VAR_0166","VAR_0167","VAR_0168","VAR_0169","VAR_0176","VAR_0177","VAR_0178","VAR_0179","VAR_0204","VAR_0217","VAR_0156","VAR_0157","VAR_0158","VAR_0159")
+
+# Convert date and add a year field for that date
+
+for (date in dates) {
+  
+  print(str(total[date]))
+  
+  total[,date] = as.Date(total[,date], format = "%d%b%y")
+  
+  total[,paste0(date,"_year")] <- year(total[,date])
+  
+  total[,paste0(date,"_month")] <- month(total[,date])
+  
+  total[,paste0(date,"_mday")] <- mday(total[,date])
+  
+  total[,paste0(date,"_wday")] <- wday(total[,date])
+  
+  total[,paste0(date,"_week")] <- week(total[,date])
+  
+}
+
+
+train.unique.count=lapply(train, function(x) length(unique(x)))
+
+train.unique.count_1=unlist(train.unique.count[unlist(train.unique.count)==1])
+
+train.unique.count_2=unlist(train.unique.count[unlist(train.unique.count)==2])
+
+train.unique.count_2=train.unique.count_2[-which(names(train.unique.count_2)=='target')]
+
+delete_const=names(train.unique.count_1)
+
+delete_NA56=names(which(unlist(lapply(train[,(names(train) %in% names(train.unique.count_2))], function(x) max(table(x,useNA='always'))))==145175))
+
+delete_NA89=names(which(unlist(lapply(train[,(names(train) %in% names(train.unique.count_2))], function(x) max(table(x,useNA='always'))))==145142))
+
+delete_NA918=names(which(unlist(lapply(train[,(names(train) %in% names(train.unique.count_2))], function(x) max(table(x,useNA='always'))))==144313))
+
+#VARS to delete
+
+#safe to remove VARS with 56, 89 and 918 NA's as they are covered by other VARS
+
+print(length(c(delete_const,delete_NA56,delete_NA89,delete_NA918)))
+
+train=train[,!(names(train) %in% c(delete_const,delete_NA56,delete_NA89,delete_NA918))]
+
+test=test[,!(names(test) %in% c(delete_const,delete_NA56,delete_NA89,delete_NA918))]
+
+train <- total[c(1:nrow(train)), ]
+
+train$target <- response
+
+test <- total[c((nrow(train) + 1) : nrow(total)), ]

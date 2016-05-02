@@ -1,0 +1,76 @@
+
+[1] "Training an XGB model of depth =  8 and eta =  0.03"
+[0]	val-mlogloss:3.409323	train-mlogloss:3.405498
+[1]	val-mlogloss:3.250825	train-mlogloss:3.247616
+[2]	val-mlogloss:3.126218	train-mlogloss:3.121691
+[3]	val-mlogloss:3.022651	train-mlogloss:3.017209
+[4]	val-mlogloss:2.933845	train-mlogloss:2.926919
+[1] "Training an XGB model of depth =  8 and eta =  0.02"
+[0]	val-mlogloss:3.484904	train-mlogloss:3.482716
+[1]	val-mlogloss:3.365476	train-mlogloss:3.362463
+[2]	val-mlogloss:3.266313	train-mlogloss:3.262728
+[3]	val-mlogloss:3.180952	train-mlogloss:3.176525
+[4]	val-mlogloss:3.105961	train-mlogloss:3.100974
+[1] "Training an XGB model of depth =  8 and eta =  0.01"
+[0]	val-mlogloss:3.560900	train-mlogloss:3.559753
+[1]	val-mlogloss:3.493472	train-mlogloss:3.491083
+[2]	val-mlogloss:3.432709	train-mlogloss:3.430209
+[3]	val-mlogloss:3.377525	train-mlogloss:3.374539
+[4]	val-mlogloss:3.326843	train-mlogloss:3.322730
+[1] "Training an XGB model of depth =  10 and eta =  0.03"
+[0]	val-mlogloss:3.402592	train-mlogloss:3.399175
+[1]	val-mlogloss:3.239216	train-mlogloss:3.231978
+[2]	val-mlogloss:3.111132	train-mlogloss:3.102096
+[3]	val-mlogloss:3.004721	train-mlogloss:2.992997
+[4]	val-mlogloss:2.913375	train-mlogloss:2.899244
+[1] "Training an XGB model of depth =  10 and eta =  0.02"
+[0]	val-mlogloss:3.480434	train-mlogloss:3.476896
+[1]	val-mlogloss:3.357289	train-mlogloss:3.352406
+[2]	val-mlogloss:3.255263	train-mlogloss:3.249089
+[3]	val-mlogloss:3.167455	train-mlogloss:3.159364
+[4]	val-mlogloss:3.090010	train-mlogloss:3.080034
+[1] "Training an XGB model of depth =  10 and eta =  0.01"
+[0]	val-mlogloss:3.558791	train-mlogloss:3.556402
+[1]	val-mlogloss:3.489094	train-mlogloss:3.486282
+[2]	val-mlogloss:3.426575	train-mlogloss:3.422184
+[3]	val-mlogloss:3.369747	train-mlogloss:3.364658
+[4]	val-mlogloss:3.317479	train-mlogloss:3.312024
+[1] "Training an XGB model of depth =  12 and eta =  0.03"
+[0]	val-mlogloss:3.398426	train-mlogloss:3.393121
+[1]	val-mlogloss:3.231715	train-mlogloss:3.220203
+[2]	val-mlogloss:3.100746	train-mlogloss:3.085165
+[3]	val-mlogloss:2.991848	train-mlogloss:2.972109
+[4]	val-mlogloss:2.898320	train-mlogloss:2.875048
+[1] "Training an XGB model of depth =  12 and eta =  0.02"
+[0]	val-mlogloss:3.477588	train-mlogloss:3.473185
+[1]	val-mlogloss:3.351938	train-mlogloss:3.344698
+[2]	val-mlogloss:3.247775	train-mlogloss:3.237453
+[3]	val-mlogloss:3.158117	train-mlogloss:3.144842
+[4]	val-mlogloss:3.079136	train-mlogloss:3.062805
+[1] "Training an XGB model of depth =  12 and eta =  0.01"
+[0]	val-mlogloss:3.557465	train-mlogloss:3.554510
+[1]	val-mlogloss:3.486405	train-mlogloss:3.482543
+[2]	val-mlogloss:3.422531	train-mlogloss:3.416863
+[3]	val-mlogloss:3.364502	train-mlogloss:3.357079
+[4]	val-mlogloss:3.311169	train-mlogloss:3.302852
+[1] "Training an XGB model of depth =  14 and eta =  0.03"
+[0]	val-mlogloss:3.395361	train-mlogloss:3.387360
+[1]	val-mlogloss:3.226016	train-mlogloss:3.210629
+[2]	val-mlogloss:3.093168	train-mlogloss:3.071441
+[3]	val-mlogloss:2.982377	train-mlogloss:2.954766
+[4]	val-mlogloss:2.887037	train-mlogloss:2.853635
+[1] "Training an XGB model of depth =  14 and eta =  0.02"
+[0]	val-mlogloss:3.475547	train-mlogloss:3.469995
+[1]	val-mlogloss:3.347965	train-mlogloss:3.337652
+[2]	val-mlogloss:3.242137	train-mlogloss:3.227491
+[3]	val-mlogloss:3.150841	train-mlogloss:3.131914
+[4]	val-mlogloss:3.070598	train-mlogloss:3.047375
+[1] "Training an XGB model of depth =  14 and eta =  0.01"
+[0]	val-mlogloss:3.556268	train-mlogloss:3.553177
+[1]	val-mlogloss:3.484494	train-mlogloss:3.478902
+[2]	val-mlogloss:3.419662	train-mlogloss:3.412071
+[3]	val-mlogloss:3.360780	train-mlogloss:3.350612
+[4]	val-mlogloss:3.306696	train-mlogloss:3.294769
+[1] "Training an XGB model of depth =  16 and eta =  0.03"
+[0]	val-mlogloss:3.393147	train-mlogloss:3.383118
+[1]	val-mlogloss:3.222054	train-mlogloss:3.202821

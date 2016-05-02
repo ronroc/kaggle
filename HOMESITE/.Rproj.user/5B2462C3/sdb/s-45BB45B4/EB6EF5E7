@@ -1,0 +1,17 @@
+{
+    "contents" : "\nrequire(readr)\n\n# find a better way to unzip files over here\n\ninput <- list.files(path = \"D:\\\\kaggle\\\\HOMESITE\\\\ensemble\\\\csv\")\n\nfor(i in 1:length(input))\n{\n  \n  assign(paste0(\"df_\", i),\n         read_csv(paste0(\"D:\\\\kaggle\\\\HOMESITE\\\\ensemble\\\\csv\\\\\", input[i])))\n}\n\n\n# run a simple row average \n\ntmp <- cbind.data.frame(df_1$QuoteConversion_Flag, \n      df_2$QuoteConversion_Flag,\n      df_3$QuoteConversion_Flag,\n      df_4$QuoteConversion_Flag,\n      df_5$QuoteConversion_Flag,\n      df_6$QuoteConversion_Flag,\n      df_7$QuoteConversion_Flag,\n      df_8$QuoteConversion_Flag,\n      df_9$QuoteConversion_Flag,\n      df_10$QuoteConversion_Flag,\n      df_11$QuoteConversion_Flag,\n      df_12$QuoteConversion_Flag,\n      df_13$QuoteConversion_Flag,\n      df_14$QuoteConversion_Flag,\n      df_15$QuoteConversion_Flag,\n      df_16$QuoteConversion_Flag,\n      df_17$QuoteConversion_Flag,\n      df_18$QuoteConversion_Flag\n)\n\n\n\ntmp <- cbind.data.frame(df_1$QuoteConversion_Flag, \n                        df_2$QuoteConversion_Flag,\n                        df_3$QuoteConversion_Flag\n                        )\n\n QuoteConversion_Flag <- (rowMeans(tmp))\n\ndf <- data.frame(QuoteNumber = df_1$QuoteNumber, QuoteConversion_Flag = QuoteConversion_Flag)\n\nnames(df)\n\nwrite_csv(df, \"df_average_all_02072016_2.csv\")\n\n# now for the stacking part",
+    "created" : 1454862063502.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "803698979",
+    "id" : "EB6EF5E7",
+    "lastKnownWriteTime" : 1454862761,
+    "path" : "D:/kaggle/df_average.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 13,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

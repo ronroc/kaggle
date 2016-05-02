@@ -1,0 +1,17 @@
+{
+    "contents" : "rm(list = ls())\n\ntrain <- read_csv(\"C:/Users/amulya/Desktop/train_amazon.csv\")\n\ntest <- read_csv(\"C:/Users/amulya/Desktop/test_amazon.csv\")\n\ntrain$id <- 100000+c(1:dim(train)[1])\n\ntest$ACTION <- -1\n\ntmp <- rbind(train, test) \n\ntmp$ACTION0 <- tmp$ACTION\n\ntmp$ACTION <- (1-tmp$ACTION0)\n\ntmp$y <- tmp$ACTION\n\ntmp$y[tmp$y > 1] <- 0\n\ntmp$ws <- 1\n\ntmp$ws[tmp$ACTION0 < 0] <- 0\n\ntmp$dummy <- 'A'\n\ntmp$split1 <- 0\n\ntmp$split1[tmp$ACTION0 < 0] <- 2\n\n#convert variables into sequential ids\n\ntmp$res_f <- factor(tmp$RESOURCE)\n\ntmp$res_f <- as.integer(tmp$res_f)\n\ntmp$mgr_f<-factor(tmp$MGR_ID)\n\ntmp$mgr_f_id<-as.integer(tmp$mgr_f)\n\ntmp$rocd_f<-factor(tmp$ROLE_CODE)\n\ntmp$rocd_f_id<-as.integer(tmp$rocd_f)\n\ntmp$rr1_f<-factor(tmp$ROLE_ROLLUP_1)\n\ntmp$rr1_f_id<-as.integer(tmp$rr1_f)\n\ntmp$rr2_f<-factor(tmp$ROLE_ROLLUP_2)\n\ntmp$rr2_f_id<-as.integer(tmp$rr2_f)\n\ntmp$rt_f<-factor(tmp$ROLE_TITLE)\n\ntmp$rt_f_id<-as.integer(tmp$rt_f)\n\ntmp$rf_f<-factor(tmp$ROLE_FAMILY)\n\ntmp$rf_f_id<-as.integer(tmp$rf_f)\n\ntmp$rd_f<-factor(tmp$ROLE_DEPTNAME)\n\ntmp$rd_f_id<-as.integer(tmp$rd_f)\n\ntmp$rfd_f<-factor(tmp$ROLE_FAMILY_DESC)\n\ntmp$rfd_f_id<-as.integer(tmp$rfd_f)\n\n\n\n\n\n\n\n\n\n",
+    "created" : 1443968551255.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "85496218",
+    "id" : "2FCDF6DE",
+    "lastKnownWriteTime" : 1443968431,
+    "path" : "D:/kaggle/Amazon/Amazon/amazon_owen.R",
+    "project_path" : "amazon_owen.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

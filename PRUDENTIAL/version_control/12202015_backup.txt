@@ -1,0 +1,94 @@
+library(readr); library(xgboost); require(data.table)
+
+rm(list = ls())
+
+# Set a random seed for reproducibility
+
+set.seed(12202015)
+
+train <- fread("C:\\Users\\amulya\\Documents\\Kaggle\\PRUDENTIAL\\Data\\train.csv", data.table = F)
+
+test  <- read_csv("C:\\Users\\amulya\\Documents\\Kaggle\\PRUDENTIAL\\Data\\test.csv")
+
+feature.names <- names(train)[2:ncol(train)-1]
+
+cat("assuming text variables are categorical & replacing them with numeric ids\n")
+
+for (f in feature.names) {
+
+    if (class(train[[f]])=="character") {
+  
+        levels <- unique(c(train[[f]], test[[f]]))
+    
+        train[[f]] <- as.integer(factor(train[[f]], levels=levels))
+    
+        test[[f]]  <- as.integer(factor(test[[f]],  levels=levels))
+  }
+}
+
+response <- train$Response
+
+train$Response <- NULL
+
+tmp <- rbind(train, test)
+
+tmp[is.na(tmp)] <- -1
+
+train <- tmp[c(1:59381),]
+
+test <- tmp[c(59382:79146),]
+
+
+cat("training a XGBoost classifier\n")
+
+evalerror <- function(preds, dtrain) {
+
+    labels <- getinfo(dtrain, "label")
+  
+    err <- ScoreQuadraticWeightedKappa(labels,round(preds))
+  
+    return(list(metric = "kappa", value = err))
+    
+    }
+
+
+xgbtrain <- xgb.DMatrix(data.matrix(train[, -c(1)]) , label = response )
+
+
+clf <- xgb.train(data        = xgbtrain,
+               
+               eta         = 0.02,
+               
+               depth       = 21,
+               
+               nrounds     = 4000,
+               
+               objective   = "count:poisson",
+               
+               colsample_bytree=0.65,
+               
+               min_child_weight=3,
+               
+               subsample=0.7,
+               
+               feval = evalerror,
+               
+               verbose = 1)
+
+cat("making predictions\n")
+
+submission <- data.frame(Id=test$Id)
+
+submission$Response <- as.integer(round(predict(clf, data.matrix(test[,feature.names]))))
+
+# I pretended this was a regression problem and some predictions may be outside the range
+
+submission[submission$Response<1, "Response"] <- 1
+
+submission[submission$Response>8, "Response"] <- 8
+
+submission[submission$Response==3,"Response"] <- 2
+
+cat("saving the submission file\n")
+
+write_csv(submission, "C:\\Users\\amulya\\Documents\\Kaggle\\PRUDENTIAL\\submission\\12202015.csv")

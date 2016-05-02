@@ -1,0 +1,18 @@
+{
+    "contents" : "\nrequire(data.table)\n\ntrain_raw <- fread(\"D:\\\\kaggle\\\\BNP\\\\DATA\\\\train.csv\", data.table = F)\n\ntest_raw <- fread(\"D:\\\\kaggle\\\\BNP\\\\DATA\\\\test.csv\", data.table = F)\n\ntrain_ID <- train_raw$ID \n\ntest_ID <- test_raw$ID\n\nresponse <- train_raw$target\n\ntrain_raw$ID <- NULL; test_raw$ID <- NULL; train_raw$target <- NULL\n\n# two stages EDA from now on , first understand distribution of features for the whole dataset,\n\n# next do the same for train and test features\n\ntmp <- rbind(train_raw, test_raw)\n\n# check for categorical variables-----------------------------------------------------------------------\n\nuniq <- c()\n\nfor(i in names(tmp)){\n  \n  tmp_1 <- length(unique(tmp[, i]))\n  \n  uniq <- c(uniq, tmp_1)\n \n}\n\ndf_uniq <- data.frame(col1 = names(tmp), col2 = uniq) \n\n\n# now seperate categorical variables-------------------------------------------------------------------\n\nchar_var <- c()\n\nfor(i in names(tmp)){\n  \n  if(class(tmp[, i]) == \"character\"){\n    \n    char_var <- c(char_var, i)\n  }\n}\n\n# length of character variables-----------------------------------------------------------------------\n\ndf_uniq[df_uniq$col1 %in% char_var, ]\n\ntable(tmp$v22)\n\n\ncontinous_var <- names(tmp)[!(names(tmp) %in% char_var)]\n\ntmp_char <- tmp[, char_var]\n\n\n#####################################################################################################\n\nrequire(png)\n\nfor( i in 1:19 ) {\n\n  i = 19\n  \npng(filename = paste0(\"D:\\\\kaggle\\\\BNP\\\\IMG\\\\02272016\\\\\", \"hist_\", names(tmp_char)[i], \".png\"))\n\nplotHist(tmp_char, i)\n\ndev.off()\n\n}\n\n\n###########################################################################################\n\ntrain_continous <- train_raw[, continous_var]\n\ntrain_continous$Response <- response\n\nrequire(png)\n\n\nfor( i in 1:19 ) {\n  \n  mypath = paste0(\"D:\\\\kaggle\\\\BNP\\\\IMG\\\\02272016\\\\continous\\\\\", \"density_\", names(train_continous)[i], \".png\")\n  \n  png(filename = mypath )\n  \n  plotDensity(data.in = train_continous, i = i)\n  \n  dev.off()\n  \n}\n\n\n",
+    "created" : 1456547805287.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2002046767",
+    "id" : "AA9FB19",
+    "lastKnownWriteTime" : 1456633219,
+    "path" : "D:/kaggle/BNP/CODE/plots.R",
+    "project_path" : "CODE/plots.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

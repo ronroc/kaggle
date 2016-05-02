@@ -1,0 +1,18 @@
+{
+    "contents" : "\nmy.f2cnt <- function(th2, vn1, vn2, filter=TRUE) {\n  \n  df <- data.frame(f1=th2[,vn1], f2=th2[,vn2], filter=filter)\n  \n  sum1 <- sqldf(\"select f1, f2, count(*) as cnt \n                \n                from df \n                \n                where filter=1 \n                \n                group by 1,2\")\n  \n  tmp <- sqldf(\"select b.cnt \n               \n               from df a left join sum1 b \n               \n               on a.f1=b.f1 and a.f2=b.f2\")\n  \n  tmp$cnt[is.na(tmp$cnt)] <- 0\n  \n  return(tmp$cnt)\n  \n}\n\n#3 way count\n\nmy.f3cnt<-function(th2, vn1, vn2, vn3, filter=TRUE) {\n  \n  df<-data.frame(f1=th2[,vn1], f2=th2[,vn2], f3=th2[, vn3], filter=filter)\n  \n  sum1<-sqldf(\"select f1, f2, f3, count(*) as cnt \n              \n              from df \n              \n              where filter=1 \n              \n              group by 1,2, 3\")\n  \n  tmp<-sqldf(\"select b.cnt \n             \n             from df a left join sum1 b \n             \n             on a.f1=b.f1 and a.f2=b.f2 and a.f3=b.f3\")\n  \n  tmp$cnt[is.na(tmp$cnt)]<-0\n  \n  return(tmp$cnt)\n  \n}\n",
+    "created" : 1450600372519.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3843010474",
+    "id" : "55767791",
+    "lastKnownWriteTime" : 7011605692497750387,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

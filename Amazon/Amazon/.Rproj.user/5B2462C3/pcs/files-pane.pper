@@ -1,0 +1,9 @@
+{
+    "path" : "D:/kaggle/Amazon/Amazon",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

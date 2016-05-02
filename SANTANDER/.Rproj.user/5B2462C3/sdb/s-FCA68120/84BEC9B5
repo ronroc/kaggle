@@ -1,0 +1,18 @@
+{
+    "contents" : "1. used 9999999999 and -1 for dummy encoding\n\n2. check 'df_zero' , only 62 out of 335 columns have zero % less than 90\n                      \n                     only 36 out of 335 columns have zero % less than 80\n                     \n3. ",
+    "created" : 1458968288578.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1407588650",
+    "id" : "84BEC9B5",
+    "lastKnownWriteTime" : 1458980393,
+    "path" : "D:/kaggle/SANTANDER/CODE/OBS",
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "type" : "text"
+}

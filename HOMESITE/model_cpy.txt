@@ -1,0 +1,89 @@
+
+feature.names <- names(train) # using the whole set now , change later
+
+split <- createDataPartition( y = train_raw$QuoteConversion_Flag, list = F, p = 0.9 )
+
+training <- train[split, ]
+
+response_train <- train_raw$QuoteConversion_Flag[split]
+
+
+validation <- train[-split, ]
+
+response_val <- train_raw$QuoteConversion_Flag[-split]
+
+
+dtrain <- xgb.DMatrix(data.matrix(training), label = response_train)
+
+dval <- xgb.DMatrix(data.matrix(validation), label = response_val)
+
+
+watchlist <- list(val = dval, train = dtrain)
+
+gc()
+
+#################################################################################################
+
+cl <- makeCluster(2); registerDoParallel(cl) 
+
+start <- Sys.time()
+
+param <- list(  objective=  "binary:logistic", 
+                
+                booster = "gbtree",
+                
+                eval_metric = "auc",
+                
+                eta                 = 0.02, # 0.06, #0.01,
+                
+                max_depth           = 7, #changed from default of 8
+                
+                subsample           = 0.82, # 0.7
+                
+                colsample_bytree    = 0.66 # 0.7
+                
+                #num_parallel_tree   = 2
+                
+                # alpha = 0.0001, 
+                
+                # lambda = 1
+                
+                )
+
+clf <- xgb.train( params              = param, 
+                    
+                  data                = dtrain, 
+                    
+                  nrounds             = 2500, 
+                    
+                  verbose             = 1,  #1
+                    
+                  #early.stop.round    = 150,
+                    
+                  watchlist           = watchlist,
+                    
+                  maximize            = FALSE, 
+                  
+                  nthread = 2
+                  
+                  )
+
+time_taken_2500 <- Sys.time() - start
+
+xgb.save(clf, "D:\\kaggle\\HOMESITE\\models\\11152015_2500.R")
+
+pred <- predict(clf_extra, data.matrix(test[,feature.names]))
+
+submission <- data.frame(QuoteNumber=test$QuoteNumber, QuoteConversion_Flag=pred)
+
+cat("saving the submission file\n")
+
+write_csv(submission, "D:\\kaggle\\HOMESITE\\submission\\11152015_2500.csv")
+
+ptrain <- predict(clf, dtrain, outputmargin = T)
+
+
+setinfo(dtrain, "base_margin", ptrain)
+
+
+clf_extra <- xgboost(params = param, data = dtrain, nround = 10000)

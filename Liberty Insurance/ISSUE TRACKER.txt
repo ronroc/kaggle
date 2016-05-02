@@ -1,0 +1,5 @@
+1. IN WF_1 UNABLE TO FIND A CODE TO SUBSTITUTE FOR HIGH COR VALUES
+
+2. USE ifelse function --ifelse("condition" (some_operator) "other_condition", (If_True), (If_false))
+
+3.SAVE CSV AND R CODE (CARET) FILES WITH THE SAME NAME
