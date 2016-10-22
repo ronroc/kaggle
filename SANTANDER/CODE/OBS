@@ -1,7 +1,0 @@
-1. used 9999999999 and -1 for dummy encoding
-
-2. check 'df_zero' , only 62 out of 335 columns have zero % less than 90
-                      
-                     only 36 out of 335 columns have zero % less than 80
-                     
-3. 
