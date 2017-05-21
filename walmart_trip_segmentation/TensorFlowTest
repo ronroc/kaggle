@@ -1,0 +1,328 @@
+import pickle
+from sklearn.utils import shuffle
+import numpy as np
+import tensorflow as tf
+import pandas as pd
+from tensorflow.contrib.layers import flatten
+import requests, zipfile, io, pickle
+
+file_loc = 'D:/LOCAL/PYTHON/Udacity/Term1/Project2/'
+r = requests.get("https://d17h27t6h515a5.cloudfront.net/topher/2017/February/5898cd6f_traffic-signs-data/traffic-signs-data.zip")
+z = zipfile.ZipFile(io.BytesIO(r.content))
+
+train = pickle.load(z.open('train.p'))
+test = pickle.load(z.open('test.p'))
+valid = pickle.load(z.open('valid.p'))
+
+X_train, y_train = train['features'], train['labels']
+X_test, y_test = test['features'], test['labels']
+X_valid, y_valid = valid['features'], valid['labels']
+signnames=pd.read_csv(file_loc +'CarND-Traffic-Sign-Classifier-Project-master/signnames.csv').values[:,1]
+
+###################
+
+import pickle
+from sklearn.utils import shuffle
+import numpy as np
+import tensorflow as tf
+import pandas as pd
+from tensorflow.contrib.layers import flatten
+import requests, zipfile, io, pickle
+
+file_loc = 'D:/LOCAL/PYTHON/Udacity/Term1/Project2/'
+r = requests.get("https://d17h27t6h515a5.cloudfront.net/topher/2017/February/5898cd6f_traffic-signs-data/traffic-signs-data.zip")
+z = zipfile.ZipFile(io.BytesIO(r.content))
+
+train = pickle.load(z.open('train.p'))
+test = pickle.load(z.open('test.p'))
+valid = pickle.load(z.open('valid.p'))
+
+X_train, y_train = train['features'], train['labels']
+X_test, y_test = test['features'], test['labels']
+X_valid, y_valid = valid['features'], valid['labels']
+signnames=pd.read_csv(file_loc +'CarND-Traffic-Sign-Classifier-Project-master/signnames.csv').values[:,1]
+
+######################
+
+import plotly
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+plotly.tools.set_credentials_file(username='ronroc', api_key='sT5GeAvDSZsuV6CG31ef')
+
+x=go.Histogram(x=y_train)
+data=[x]
+layout = go.Layout(
+title='Number of samples in training set per different sign type',
+xaxis=dict(
+        title='Traffic Sign class',
+        titlefont=dict(
+            family='Segoe UI',
+            size=18,
+            color='#050404'
+            )
+        ),
+yaxis=dict(
+    title='Samples',
+    titlefont=dict(
+    family='Segoe UI',
+    size=18,
+    color='#050404'
+        )
+    )
+)
+fig = go.Figure(data=data, layout=layout)
+py.iplot(fig, filename='histogram')
+
+####################
+
+x=go.Histogram(x=y_valid)
+data=[x]
+layout = go.Layout(
+title='Number of samples in Validation set per different sign type',
+xaxis=dict(
+        title='Traffic Sign class',
+        titlefont=dict(
+            family='Segoe UI',
+            size=18,
+            color='#050404'
+            )
+        ),
+yaxis=dict(
+    title='Samples',
+    titlefont=dict(
+    family='Segoe UI',
+    size=18,
+    color='#050404'
+        )
+    )
+)
+fig = go.Figure(data=data, layout=layout)
+py.iplot(fig, filename='histogram')
+
+########################################
+x=go.Histogram(x=y_test)
+data=[x]
+layout = go.Layout(
+title='Number of samples in Testing set per different sign type',
+xaxis=dict(
+        title='Traffic Sign class',
+        titlefont=dict(
+            family='Segoe UI',
+            size=18,
+            color='#050404'
+            )
+        ),
+yaxis=dict(
+    title='Samples',
+    titlefont=dict(
+    family='Segoe UI',
+    size=18,
+    color='#050404'
+        )
+    )
+)
+fig = go.Figure(data=data, layout=layout)
+py.iplot(fig, filename='histogram')
+
+##################################
+
+#Number of examples for sign classes in the training set
+import random
+from matplotlib import pyplot
+
+
+col_width = max(len(name) for name in signnames)
+sign_classes, class_indices, class_counts = np.unique(y_train, return_index = True, return_counts = True)
+
+
+for c, c_index, c_count in zip(sign_classes, class_indices, class_counts):
+    print("Class %i: %-*s  %s samples" % (c, col_width, signnames[c], str(c_count)))
+    fig = pyplot.figure(figsize = (6, 1))
+    fig.subplots_adjust(left = 0, right = 1, bottom = 0, top = 1, hspace = 0.05, wspace = 0.05)
+    random_indices = random.sample(range(c_index, c_index + c_count), 10)
+    for i in range(10):
+        axis = fig.add_subplot(1, 10, i + 1, xticks=[], yticks=[])
+        axis.imshow(X_train[random_indices[i]])
+    pyplot.show()
+    print("...............................................................\n")
+
+############################################################################
+
+### Preprocess the data here. It is required to normalize the data. Other preprocessing steps could include
+# Normalise input (images still in colour)
+X_train = (X_train - X_train.mean()) / (np.max(X_train) - np.min(X_train))
+X_test = (X_test - X_test.mean()) / (np.max(X_test) - np.min(X_test))
+X_valid= (X_valid - X_valid.mean()) / (np.max(X_valid) - np.min(X_valid))
+
+#########################################################
+### Define your architecture here.
+EPOCHS = 101
+BATCH_SIZE = 128
+
+
+def LeNet(x):
+    # Arguments used for tf.truncated_normal, randomly defines variables for the weights and biases for each layer
+    mu = 0
+    sigma = 0.1
+
+    #Layer 1: Convolutional. Input = 32x32x1. Output = 28x28x6.
+    conv1_W = tf.Variable(tf.truncated_normal(shape=(5, 5, 3, 6), mean=mu, stddev=sigma))
+    conv1_b = tf.Variable(tf.zeros(6))
+    conv1 = tf.nn.conv2d(x, conv1_W, strides=[1, 1, 1, 1], padding='VALID') + conv1_b
+
+    #Activation.
+    conv1 = tf.nn.relu(conv1)
+
+    #Pooling. Input = 28x28x6. Output = 14x14x6.
+    conv1 = tf.nn.max_pool(conv1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+
+    #Layer 2: Convolutional. Output = 10x10x16.
+    conv2_W = tf.Variable(tf.truncated_normal(shape=(5, 5, 6, 16), mean=mu, stddev=sigma))
+    conv2_b = tf.Variable(tf.zeros(16))
+    conv2 = tf.nn.conv2d(conv1, conv2_W, strides=[1, 1, 1, 1], padding='VALID') + conv2_b
+
+    #Activation.
+    conv2 = tf.nn.relu(conv2)
+
+    #Pooling. Input = 10x10x16. Output = 5x5x16.
+    conv2 = tf.nn.max_pool(conv2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+
+    #Flatten. Input = 5x5x16. Output = 400.
+    fc0 = flatten(conv2)
+
+    #Layer 3: Fully Connected. Input = 400. Output = 120.
+    fc1_W = tf.Variable(tf.truncated_normal(shape=(400, 120), mean=mu, stddev=sigma))
+    fc1_b = tf.Variable(tf.zeros(120))
+    fc1 = tf.matmul(fc0, fc1_W) + fc1_b
+
+    #Activation.
+    fc1 = tf.nn.relu(fc1)
+
+    #Layer 4: Fully Connected. Input = 120. Output = 84.
+    fc2_W = tf.Variable(tf.truncated_normal(shape=(120, 84), mean=mu, stddev=sigma))
+    fc2_b = tf.Variable(tf.zeros(84))
+    fc2 = tf.matmul(fc1, fc2_W) + fc2_b
+
+    #Activation.
+    fc2 = tf.nn.relu(fc2)
+
+    #Layer 5: Fully Connected. Input = 84. Output = 10.
+    fc3_W = tf.Variable(tf.truncated_normal(shape=(84, 43), mean=mu, stddev=sigma))
+    fc3_b = tf.Variable(tf.zeros(43))
+    logits = tf.matmul(fc2, fc3_W) + fc3_b
+
+    return logits
+
+##########################
+x = tf.placeholder(tf.float32, (None, 32, 32, 3))
+y = tf.placeholder(tf.int32, (None))
+one_hot_y = tf.one_hot(y, 43)
+
+rate = 0.001
+
+logits = LeNet(x)
+cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=one_hot_y, logits=logits)
+loss_operation = tf.reduce_mean(cross_entropy)
+optimizer = tf.train.AdamOptimizer(learning_rate = rate)
+training_operation = optimizer.minimize(loss_operation)
+
+correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(one_hot_y, 1))
+accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+saver = tf.train.Saver()
+
+#########################
+def evaluate(X_data, y_data):
+    num_examples = len(X_data)
+    total_accuracy = 0
+    sess = tf.get_default_session()
+    for offset in range(0, num_examples, BATCH_SIZE):
+        batch_x, batch_y = X_data[offset:offset+BATCH_SIZE], y_data[offset:offset+BATCH_SIZE]
+        accuracy = sess.run(accuracy_operation, feed_dict={x: batch_x, y: batch_y})
+        total_accuracy += (accuracy * len(batch_x))
+    return total_accuracy / num_examples
+
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    num_examples = len(X_train)
+
+    print("Training...")
+    print()
+    for i in range(EPOCHS):
+        X_train, y_train = shuffle(X_train, y_train)
+        for offset in range(0, num_examples, BATCH_SIZE):
+            end = offset + BATCH_SIZE
+            batch_x, batch_y = X_train[offset:end], y_train[offset:end]
+            sess.run(training_operation, feed_dict={x: batch_x, y: batch_y})
+
+        if i % 10 == 0:
+            validation_accuracy = evaluate(X_valid, y_valid)
+            print("EPOCH {} ...".format(i + 1))
+            print("Validation Accuracy = {:.3f}".format(validation_accuracy))
+            print()
+    saver.save(sess, './lenet')
+    print("Model saved")
+
+############################
+with tf.Session() as sess:
+    saver.restore(sess, tf.train.latest_checkpoint('.'))
+    test_accuracy = evaluate(X_test, y_test)
+    print("Test Accuracy = {:.3f}".format(test_accuracy))
+
+####################################
+### Load the images and plot them here.
+import os
+from skimage.transform import resize
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+%matplotlib inline
+ImgPath = 'D:/LOCAL/PYTHON/Udacity/Term1/Project2/Traffic_Sign_Data/'
+file=os.listdir(ImgPath)
+fig = plt.figure(figsize=(8,8))
+fig.subplots_adjust(hspace=0.5)
+
+for index,filename in enumerate(file):
+    image = mpimg.imread(ImgPath + str(filename))
+    ax = fig.add_subplot(4,3,index+1)
+    ax.set_xlabel(filename)
+    image_resize = resize(image, (32, 32))
+    plt.imshow(image_resize)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    for tic in ax.xaxis.get_major_ticks():
+        tic.tick1On = tic.tick2On = False
+        tic.label1On = tic.label2On = False
+    for tic in ax.yaxis.get_major_ticks():
+        tic.tick1On = tic.tick2On = False
+        tic.label1On = tic.label2On = False
+
+#############################################
+### Run the predictions here and use the model to output the prediction for each image.
+### Make sure to pre-process the images with the same pre-processing pipeline used earlier.
+import cv2
+with tf.Session() as sess:
+    saver.restore(sess, tf.train.latest_checkpoint('.'))
+    predictions =[]
+    ImgPath = 'D:/LOCAL/PYTHON/Udacity/Term1/Project2/Traffic_Sign_Data/'
+    file=os.listdir(ImgPath)
+    for index,filename in enumerate(file):
+        image = mpimg.imread(ImgPath + str(filename))
+        dim = (32, 32)
+        image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+        image = (image - image.mean()) / (np.max(image) - np.min(image))
+        test_prediction = tf.nn.softmax(logits)
+        classification = sess.run(test_prediction,feed_dict = {x: [image]})
+        test_class = sess.run(tf.argmax(classification,1))
+        value,indices = sess.run(tf.nn.top_k(tf.constant(classification), k=5))
+        predict_confidence=value.squeeze()
+        indices = indices.squeeze()
+        print(filename)
+        fig = plt.figure(figsize=(1,1))
+        plt.imshow(image)
+        plt.show()
+        plt.axis('off')
+        for j in range(0,5):
+            print ( ' Class_id:{0:2d}  confidence:{1:.0%}'.format((indices[j]),(predict_confidence[j])))
+        plt.close()
+
+###################################################
